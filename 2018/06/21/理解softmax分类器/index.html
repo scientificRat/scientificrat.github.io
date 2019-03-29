@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+  <meta name="description" content="scientificrat&#39;s blog">
+  <meta name="keyword" content="编程, 程序, 软件, 数学">
+  
+    <link rel="shortcut icon" type="image/ico" href="/favicon.png">
+  
+  <title>
+    
+      理解softmax分类器 | 黄鼠博客
+    
+  </title>
+  <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" rel="stylesheet">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/geopattern/1.2.3/js/geopattern.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+  
+  
+  
+  
+    <!-- MathJax support START -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <!-- MathJax support END -->
+  
+
+
+</head>
+<div class="wechat-share">
+  <img src="/css/images/logo.png">
+</div>
+
+  <body>
+    <header class="header fixed-header">
+  <div class="header-container">
+    <a class="home-link" href="/">
+      <div class="logo"></div>
+      <span>黄鼠博客</span>
+    </a>
+    <ul class="right-list">
+      
+        <li class="list-item">
+          
+            <a href="/" class="item-link">Home</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/tags/" class="item-link">Tags</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/archives/" class="item-link">Archives</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/project/" class="item-link">Projects</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/about/" class="item-link">About</a>
+          
+        </li>
+      
+    </ul>
+    <div class="menu">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </div>
+    <div class="menu-mask">
+      <ul class="menu-list">
+        
+          <li class="menu-item">
+            
+              <a href="/" class="menu-link">Home</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/tags/" class="menu-link">Tags</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/archives/" class="menu-link">Archives</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/project/" class="menu-link">Projects</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/about/" class="menu-link">About</a>
+            
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</header>
+
+    <div id="article-banner">
+  <h2>理解softmax分类器</h2>
+  <p class="post-date">2018-06-21</p>
+  <div class="arrow-down">
+    <a href="javascript:;"></a>
+  </div>
+</div>
+<main class="app-body flex-box">
+  <!-- Article START -->
+  <article class="post-article">
+    <section class="markdown-content"><blockquote>
+<p>softmax分类器是神经网络中最常用的分类器。它是如此简单有效，所以十分流行（这篇文章面向初学者，高手勿喷）</p>
+</blockquote>
+<h2 id="什么是softmax">什么是softmax</h2>
+<p>对于一个输入x, 我们想知道它是N个类别中的哪一类<br>
+假设我们有一个模型，能对输入x输出N个类别的评分，评分越高说明x是这个类别的可能性越大，评分最高的被认为是x正确的类别。<br>
+然而，这样的评分范围很广，我们希望把它变成一个概率，而softmax就是一个能将<span class="math inline">\((-\infty,+\infty)\)</span>的一组评分转化为一组概率，并让它们的和为1的归一化的函数（squashing function），而且这个函数是保序的，原来大的评分转换后的概率大，而小的评分对应的概率小。<br>
+为了达到这个<code>squashing</code>的目的，softmax 被定义为： <span class="math display">\[
+softmax(s_i) = \frac{e^{s_i} }{\sum_{j=1}^{N}e^{s_j} }  \qquad  (i=1,\cdots,N)
+\]</span></p>
+<p>其中<span class="math inline">\(s_i\)</span>表示模型对输入x在第i个类别上的评分值,<span class="math inline">\(e\)</span>指数的作用是将<span class="math inline">\((-\infty,+\infty)\)</span>的评分变为<span class="math inline">\((0,+\infty)\)</span>，而不影响相对大小关系，而分母的求和是用来归一化的，使得它们<strong>加起来等于1</strong><br>
+这样就可以将一组<strong>评分</strong>转化为一组<strong>概率</strong>，总概率和为1，而且保持相对大小关系。<br>
+举个例子，下图的softmax将6个评分转化为一组<strong>概率</strong><br>
+<img src="/images/softmax.png" alt="softmax"></p>
+<h2 id="线性模型">线性模型</h2>
+<blockquote>
+<p>如果单讲softmax这里已经结束了，它不过是一个<strong>squashing function</strong><br>
+但这对一个分类器是不完整的，我们想知道前面这个<strong>评分</strong>模型怎么做，如果前面的模型不合理，加上softmax也没有任何意义，因此前面这个<strong>评分模型</strong>才是整个softmax分类器的关键。本节带大家认识线性模型</p>
+</blockquote>
+<p>线性模型想法很简单，对于一个有n个属性的输入<span class="math inline">\(x\)</span>，它是i类别的评分被认为可以被<span class="math inline">\(x\)</span>属性值的线性组合（加权和）确定，线性组合的组合系数(向量)记为<span class="math inline">\(\theta_i\)</span>。<br>
+<span class="math display">\[
+x=\left( \begin{align}
+  &amp; {x_1} \\ 
+ &amp; {\vdots} \\ 
+ &amp; {x_n} \\ 
+\end{align} \right)
+\]</span> <span class="math display">\[
+\theta_i = (\theta_{i1},\cdots,\theta_{in})
+\]</span> <span class="math display">\[
+score_i= \theta_ix=\theta_{i1}x_1 +\cdots+\theta_{in}x_n
+\]</span> <span class="math display">\[
+i=1...N(假设有N类)
+\]</span></p>
+<h2 id="带核函数的模型">带核函数的模型</h2>
+<blockquote>
+<p>线性模型简单，但是适用性有限，很多时候直接对属性进行线性评分是不合理的。可能不同属性之间有非线性的关联，单个属性值与评分之间也不一定是单调的线性关系，比如可能是中间大，两边小。因此我们需要考虑更复杂的模型，这里介绍一种基于已有数据的评分模型：<strong>核模型</strong></p>
+</blockquote>
+<p><strong>核模型</strong>没有直接去建模属性之间潜在的复杂关系，而是尝试用已知<strong>数据</strong>衡量新的输入。（和KNN有类似的思想）（顺便提一下，支持向量机中的核技巧也是类似的思想，SVM提到的各种空间映射，各种对偶的推导，都是其花哨的外表，而不是其基于<strong>数据</strong>的本质）</p>
+<h3 id="核函数">核函数</h3>
+<p>进入正题前，先介绍一下核函数<br>
+核函数有很多种，这里介绍一种：高斯核，也叫RBF(径向基函数)，被定义为：<br>
+<span class="math display">\[
+k(x,c) = e^{-\frac{ {\left\| x-c \right\|}^2}{2} }
+\]</span> 其中c是常量<br>
+下图是一个二维RBF函数示意图，最高点对应的是<span class="math inline">\(x=c\)</span>时的取值 直观地看，x取值越<strong>接近</strong>c则核函数取值越大<br>
+根据RBF定义式，这个<strong>接近</strong>是用二范数，也就是<strong>欧氏距离</strong>度量的 <img src="/images/rbf.svg" alt="rbf"></p>
+<h3 id="核模型的评分">核模型的评分</h3>
+<p>假设数据点越<strong>接近</strong>，则性质越<strong>相似</strong>（试问这种假设是否合理？）<br>
+然后，将评分定义为输入x到所有已知数据点<strong>接近程度</strong>(RBF值)的线性组合, 如果输入x和已知数据点是同一类别则组合系数大，而若是不同类别则组合系数小，那么当输入x<strong>接近</strong>同类数据点时评分就会高，而接近异类数据点时评分就会低（甚至为负）。<br>
+如此一来，就可以达到根据已知数据对输入的类别进行预测的目的（同类别评分高，而不同类别评分低）</p>
+<p>考虑第i个类别的评分为<span class="math inline">\(score_i\)</span>，已知m个数据点，<span class="math inline">\({x}^{(1)},\cdots,{x}^{(m)}\)</span>均为<strong>常量</strong> <span class="math display">\[
+score_i={ {\theta }_{i} }\left( \begin{align}
+  &amp; k(x,{ {x}^{(1)} }) \\ 
+ &amp; k(x,{ {x}^{(2)} }) \\ 
+ &amp; \vdots  \\ 
+ &amp; k(x,{ {x}^{(m)} }) \\ 
+\end{align} \right)
+\]</span> <span class="math display">\[
+\theta_i = (\theta_{i1},\cdots,\theta_{im})
+\]</span> <span class="math display">\[
+i=1...N(假设有N类)
+\]</span></p>
+<h2 id="神经网络softmax">神经网络+softmax</h2>
+<blockquote>
+<p>基于RBF的核模型最大问题在上面<strong>越接近越相似</strong>的假设不一定成立</p>
+</blockquote>
+<p><strong>距离接近程度</strong>与<strong>评分</strong>不一定有简单线性关系，因为RBF考虑的是<strong>欧式距离</strong>，而数据可能是在复杂流形中分布的，例如一张对折的纸，上下挨着的两点欧式距离很近，但在纸张这个平面上的距离可能很远。<br>
+举个实际的例子，下面四副图片，第一幅是原图，右边三幅图片与第一幅图片的<strong>欧式距离相同</strong>（把图片像素看作向量分量计算距离），但他们的相似程度，或者评分应该相同吗？显然不是，第三幅图已经看不出是什么人了。 <img src="/images/woman.png" alt="woman"></p>
+<p>由此我们看到了传统统计方法的瓶颈和理论缺陷，这种缺陷在高维数据上尤为明显（例如图片）。而后来的<strong>深度学习</strong>正是尝试突破这种瓶颈，尝试找到数据<strong>更本质规律</strong>的有益探索。</p>
+<p>深度学习是基于在神经网络的，神经网络本质上就是对数据做非线性变换，使得变换后的数据可以经过线性模型正确分类，这是神经网络用于分类任务最基本的想法————<strong>变换数据，使其线性可分</strong>。</p>
+<p>然而浅层神经网络并不成功，这种变换是难以学习的，让神经网络火起来的还是深度学习。至于深度学习是如何发现数据更本质的规律的，请期待后续文章。</p>
+<h2 id="训练方法">训练方法</h2>
+<blockquote>
+<p>上面的内容讲到了各种模型，可是模型参数怎么确定呢, 下面讲三种方法</p>
+</blockquote>
+<h3 id="极大似然估计">极大似然估计</h3>
+<p>上面讲过了，softmax输出的是一组概率，一个分布。 下面我们用极大似然估计的方法估计参数<span class="math inline">\(\theta\)</span>（就是上文提到的<span class="math inline">\(\theta\)</span>）<br>
+假设当前输入为<span class="math inline">\({x_1,x_2,\cdots,x_m}\)</span>，<span class="math inline">\(y_i\)</span>表示<span class="math inline">\(x_i\)</span>的正确标签类别，似然函数可定义为: <span class="math display">\[
+L(\theta)=p(y_1 |\ x_1,\theta)\cdot p(y_2 |\ x_2,\theta)\cdots  p(y_m |\ x_m,\theta)
+\]</span> 使得似然函数最大化： <span class="math display">\[
+\theta = argmax\ log(L(\theta))
+\]</span> 等价于： <span class="math display">\[
+\theta = argmin(-\sum_{i=1}^mlog(\ p(y_{i} |\ x_i,\theta)\ ))
+\]</span> 使得似然函数最大化的参数就是极大似然估计希望得到的参数，因此可以定义以下损失函数, 然后用梯度下降逼近最优解<br>
+<span class="math display">\[
+Loss = -\sum_{i=1}^mlog(\ p(y_{i} |\ x_i,\theta)\ )
+\]</span></p>
+<h3 id="kl散度和交叉熵">KL散度和交叉熵</h3>
+<p>对于一个输入<span class="math inline">\(x_i\)</span>,softmax输出的是一组概率<span class="math inline">\(q_i=[q_{i1},\cdots,q_{iN}]\)</span>，一个分布，这个分布和真实分布<span class="math inline">\(p_i\)</span>(例如<span class="math inline">\(p_i=[0,0,0,1,0,0]\)</span>)存在差异。从信息熵的角度，我们可以直接用KL散度衡量两个分布的差异，然后最小化这个差异得到的参数<span class="math inline">\(\theta\)</span>就是我们想要的结果。</p>
+<p>因此可以定义损失函数： <span class="math display">\[
+Loss = \sum_{i=1}^N KL(p_i||q_i)
+\]</span> 根据KL散度的定义，可以展开为 <span class="math display">\[
+Loss = \sum_{i=1}^N H(p_i,q_i) - H(p_i)
+\]</span> <span class="math inline">\(p_i\)</span>向量只有一个分量取值为1, 其它全为0, 因此 <span class="math inline">\(H(p_i)\equiv0\)</span> 所以，可以仅用<strong>交叉熵</strong><span class="math inline">\(H(p_i,q_i)\)</span>表示损失函数 <span class="math display">\[
+Loss = \sum_{i=1}^N H(p_i,q_i)
+\]</span> <span class="math display">\[
+Loss = \sum_{i=1}^N p_{it}log(q_{it})
+\]</span> t表示<span class="math inline">\(p_i\)</span>为1的那个分量<br>
+如果使用上一节定义的符号则可以改写为 <span class="math display">\[
+Loss = -\sum_{i=1}^mlog(\ p(y_{i} |\ x_i,\theta)\ )
+\]</span></p>
+<h3 id="小结">小结</h3>
+<p>从上面可以看出<strong>交叉熵</strong>,<strong>KL散度</strong>,<strong>极大似然估计</strong>这几种求解模型参数的方法，最终的结果都是<strong>等价的</strong>，由于交叉熵形式比较接近最终损失函数形式，人们默认<strong>交叉熵</strong>就是softmax分类器的损失函数。但是要注意，这三者的等价的关键在于<strong>标签只有一类是正确分类</strong>，这符合分类问题的定义。但如果你考虑的问题不是分类问题，或者标签是非平凡的（并不只有一类为1，其它全为0）,再使用<strong>交叉熵</strong>就不合理了。</p>
+<h2 id="logistic-回归">logistic 回归</h2>
+<p>logistic回归只是softmax应用在二分类问题上的特殊情况，其本质都是一样的，这里不再赘述。</p>
+</section>
+    <!-- Tags START -->
+    
+      <div class="tags">
+        <span>Tags:</span>
+        
+  <a href="/tags#机器学习">
+    <span class="tag-code">机器学习</span>
+  </a>
+
+      </div>
+    
+    <!-- Tags END -->
+    <!-- NAV START -->
+    
+  <div class="nav-container">
+    <!-- reverse left and right to put prev and next in a more logic postition -->
+    
+      <a class="nav-left" href="/2018/04/12/pycharm设置远程interpreter/">
+        <span class="nav-arrow">← </span>
+        
+          Pycharm设置远程interpreter
+        
+      </a>
+    
+    
+      <a class="nav-right" href="/2018/12/03/Linux-权限管理/">
+        
+          Linux 权限管理的一些麻烦
+        
+        <span class="nav-arrow"> →</span>
+      </a>
+    
+  </div>
+
+    <!-- NAV END -->
+    <!-- 打赏 START -->
+    
+      <div class="money-like">
+        <div class="reward-btn">
+          赞
+          <span class="money-code">
+            <span class="alipay-code">
+              <div class="code-image"></div>
+              <b>使用支付宝打赏</b>
+            </span>
+            <span class="wechat-code">
+              <div class="code-image"></div>
+              <b>使用微信打赏</b>
+            </span>
+          </span>
+        </div>
+        <p class="notice">支持原创，用我们自己的力量</p>
+      </div>
+    
+    <!-- 打赏 END -->
+    <!-- 二维码 START -->
+    
+    <!-- 二维码 END -->
+    
+      <!-- No Comment -->
+    
+  </article>
+  <!-- Article END -->
+  <!-- Catalog START -->
+  
+    <aside class="catalog-container">
+  <div class="toc-main">
+    <strong class="toc-title">Catalog</strong>
+    
+      <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#什么是softmax"><span class="toc-nav-text">什么是softmax</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#线性模型"><span class="toc-nav-text">线性模型</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#带核函数的模型"><span class="toc-nav-text">带核函数的模型</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#核函数"><span class="toc-nav-text">核函数</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#核模型的评分"><span class="toc-nav-text">核模型的评分</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#神经网络softmax"><span class="toc-nav-text">神经网络+softmax</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#训练方法"><span class="toc-nav-text">训练方法</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#极大似然估计"><span class="toc-nav-text">极大似然估计</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#kl散度和交叉熵"><span class="toc-nav-text">KL散度和交叉熵</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#小结"><span class="toc-nav-text">小结</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#logistic-回归"><span class="toc-nav-text">logistic 回归</span></a></li></ol>
+    
+  </div>
+</aside>
+  
+  <!-- Catalog END -->
+</main>
+
+<script>
+  (function () {
+    var url = 'https://scientificrat.com/2018/06/21/理解softmax分类器/';
+    var banner = ''
+    if (banner !== '' && banner !== 'undefined' && banner !== 'null') {
+      $('#article-banner').css({
+        'background-image': 'url(' + banner + ')'
+      })
+    } else {
+      $('#article-banner').geopattern(url)
+    }
+    $('.header').removeClass('fixed-header')
+
+    // error image
+    $(".markdown-content img").on('error', function() {
+      $(this).attr('src', 'http://file.muyutech.com/error-img.png')
+      $(this).css({
+        'cursor': 'default'
+      })
+    })
+
+    // zoom image
+    $(".markdown-content img").on('click', function() {
+      var src = $(this).attr('src')
+      if (src !== 'http://file.muyutech.com/error-img.png') {
+        var imageW = $(this).width()
+        var imageH = $(this).height()
+
+        var zoom = ($(window).width() * 0.95 / imageW).toFixed(2)
+        zoom = zoom < 1 ? 1 : zoom
+        zoom = zoom > 2 ? 2 : zoom
+        var transY = (($(window).height() - imageH) / 2).toFixed(2)
+
+        $('body').append('<div class="image-view-wrap"><div class="image-view-inner"><img src="'+ src +'" /></div></div>')
+        $('.image-view-wrap').addClass('wrap-active')
+        $('.image-view-wrap img').css({
+          'width': `${imageW}`,
+          'transform': `translate3d(0, ${transY}px, 0) scale3d(${zoom}, ${zoom}, 1)`
+        })
+        $('html').css('overflow', 'hidden')
+
+        $('.image-view-wrap').on('click', function() {
+          $(this).remove()
+          $('html').attr('style', '')
+        })
+      }
+    })
+  })();
+</script>
+
+
+
+
+
+
+
+    <div class="scroll-top">
+  <span class="arrow-icon"></span>
+</div>
+    <footer class="app-footer">
+  <p class="copyright">
+    Zhengyue Huang &copy; 2019 | Proudly powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+    <br>
+    Theme by <a href="https://github.com/yanm1ng">vexo</a>
+  </p>
+</footer>
+
+<script>
+  function async(u, c) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+</script>
+<script>
+  async("//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js", function(){
+    FastClick.attach(document.body);
+  })
+</script>
+
+<script>
+  var hasLine = 'false';
+  async("//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js", function(){
+    $('figure pre').each(function(i, block) {
+      var figure = $(this).parents('figure');
+      if (hasLine === 'false') {
+        figure.find('.gutter').hide();
+      }
+      var lang = figure.attr('class').split(' ')[1] || 'code';
+      var codeHtml = $(this).html();
+      var codeTag = document.createElement('code');
+      codeTag.className = lang;
+      codeTag.innerHTML = codeHtml;
+      $(this).attr('class', '').empty().html(codeTag);
+      figure.attr('data-lang', lang.toUpperCase());
+      hljs.highlightBlock(block);
+    });
+  })
+</script>
+<!-- Baidu Tongji -->
+
+<script src="/js/script.js"></script>
+  </body>
+</html>

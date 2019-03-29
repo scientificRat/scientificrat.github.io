@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+  <meta name="description" content="scientificrat&#39;s blog">
+  <meta name="keyword" content="编程, 程序, 软件, 数学">
+  
+    <link rel="shortcut icon" type="image/ico" href="/favicon.png">
+  
+  <title>
+    
+      回顾线性空间 | 黄鼠博客
+    
+  </title>
+  <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" rel="stylesheet">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/geopattern/1.2.3/js/geopattern.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+  
+  
+  
+  
+    <!-- MathJax support START -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <!-- MathJax support END -->
+  
+
+
+</head>
+<div class="wechat-share">
+  <img src="/css/images/logo.png">
+</div>
+
+  <body>
+    <header class="header fixed-header">
+  <div class="header-container">
+    <a class="home-link" href="/">
+      <div class="logo"></div>
+      <span>黄鼠博客</span>
+    </a>
+    <ul class="right-list">
+      
+        <li class="list-item">
+          
+            <a href="/" class="item-link">Home</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/tags/" class="item-link">Tags</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/archives/" class="item-link">Archives</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/project/" class="item-link">Projects</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/about/" class="item-link">About</a>
+          
+        </li>
+      
+    </ul>
+    <div class="menu">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </div>
+    <div class="menu-mask">
+      <ul class="menu-list">
+        
+          <li class="menu-item">
+            
+              <a href="/" class="menu-link">Home</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/tags/" class="menu-link">Tags</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/archives/" class="menu-link">Archives</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/project/" class="menu-link">Projects</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/about/" class="menu-link">About</a>
+            
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</header>
+
+    <div id="article-banner">
+  <h2>回顾线性空间</h2>
+  <p class="post-date">2017-10-11</p>
+  <div class="arrow-down">
+    <a href="javascript:;"></a>
+  </div>
+</div>
+<main class="app-body flex-box">
+  <!-- Article START -->
+  <article class="post-article">
+    <section class="markdown-content"><h2 id="前言">前言</h2>
+<blockquote>
+<p>博主一只程序猿，如有描述不对的地方，还望指正</p>
+</blockquote>
+<p>线性空间(向量空间)是线性代数中的概念。笔者现在大四，闲来无事翻翻旧书。相比当年，对线性空间的有了更深入的理解，觉得忘记了挺可惜，特此记录一下。</p>
+<h2 id="什么是线性空间">什么是线性空间</h2>
+<blockquote>
+<p>不严谨地讲，线性空间就是一个定义了<strong>加法</strong>和<strong>数乘</strong>两种运算的<em>非空集合</em></p>
+</blockquote>
+<p>这里的元素可以是<strong>任何东西</strong>，可以是矢量，可以是力，可以是矩阵，也可以是<strong>小猫小狗</strong>，只要你能为它们定义适合它们的<strong>加法</strong>和<strong>数乘</strong>两种运算, 这个集合就可以构成一个线性空间，不管它的元素具体是什么，这里统称为<strong>向量</strong>。<strong>加法</strong>和<strong>数乘</strong>也不要求是算数意义上的<strong>加法</strong>和<strong>数乘</strong>，只要它是一种二元运算并满足一定要求就行，具体满足的要求且看下面的严谨定义。</p>
+<hr>
+<p><strong>定义</strong><br>
+设V为一个非空集合，<span class="math inline">\(F\)</span>为一个数域。如果<span class="math inline">\(V\)</span>上定义了一种代数运算，称之为加法运算：<br>
+<span class="math inline">\(\forall\boldsymbol{\alpha,\beta}\in V\)</span> 总有唯一确定元素 <span class="math inline">\(\boldsymbol{\gamma} \in V\)</span> 与之对应，并称 <span class="math inline">\(\boldsymbol{\gamma}\)</span> 为 <span class="math inline">\(\boldsymbol{\alpha}\)</span> 与 <span class="math inline">\(\boldsymbol{\beta}\)</span> 的和，记作<span class="math inline">\(\boldsymbol{\gamma}=\boldsymbol{\alpha}+\boldsymbol{\beta}\)</span>。同时在数域F与 <span class="math inline">\(V\)</span>之间还定义了另外一种代数运算，称之为数量乘法(数乘): <span class="math inline">\(\forall k\in F, \forall\boldsymbol{\alpha}\in V\)</span> 有唯一确定的 <span class="math inline">\(\boldsymbol{\delta}\in V\)</span> 与之对应，并称 <span class="math inline">\(\boldsymbol{\delta}\)</span> 为<span class="math inline">\(k\)</span>与<span class="math inline">\(\boldsymbol{\alpha}\)</span>的数量乘积，记作 <span class="math inline">\(\boldsymbol{\delta} = k\boldsymbol{\alpha}\)</span>。如果以上这两种运算满足下列8条规律，则称V为数域F上的<strong>线性空间</strong>,V中的元素不管它原来的性质如何，都统称为V中的<strong>向量</strong></p>
+<p><strong>加法</strong><br>
+1. <code>交换律</code><span class="math inline">\(\boldsymbol{\alpha}+\boldsymbol{\beta}=\boldsymbol{\beta}+\boldsymbol{\alpha}\)</span><br>
+2. <code>结合律</code><span class="math inline">\((\boldsymbol{\alpha}+\boldsymbol{\beta}) + \boldsymbol{\gamma}=\boldsymbol{\alpha}+(\boldsymbol{\beta} + \boldsymbol{\gamma})\)</span><br>
+3. <code>单位元</code>V中有一个零元素 <em>0</em>, 对于任意 <span class="math inline">\(\boldsymbol{\alpha} \in V\)</span>, 都有 <span class="math inline">\(\boldsymbol{\alpha}+ \boldsymbol{0}=\boldsymbol{\alpha}\)</span><br>
+4. <code>逆元</code>对于任意 <span class="math inline">\(\boldsymbol{\alpha} \in V\)</span>, 都有 <span class="math inline">\(\boldsymbol{-\alpha} \in V\)</span> 使得 <span class="math inline">\(\boldsymbol{\alpha}+(\boldsymbol{-\alpha})=\boldsymbol{0}\)</span><br>
+<strong>数乘</strong><br>
+5. <code>与'向量加法'协调</code><span class="math inline">\(k\cdot(\boldsymbol{\alpha}+\boldsymbol{\beta})=k\cdot \boldsymbol{\alpha}+k\cdot \boldsymbol{\beta}\)</span><br>
+6. <code>与'数的加法'协调</code><span class="math inline">\((k+l)\boldsymbol{\alpha} = k\boldsymbol{\alpha}+l\boldsymbol{\alpha}\)</span><br>
+7. <code>与'数的乘法'协调</code><span class="math inline">\(k(l\boldsymbol{\alpha})=(kl)\boldsymbol{\alpha}\)</span><br>
+8. <code>单位元</code><span class="math inline">\(1\cdot\boldsymbol{\alpha} = \boldsymbol{\alpha}\)</span></p>
+<p><a href="https://en.wikipedia.org/wiki/Vector_space" target="_blank" rel="noopener">参考维基百科</a></p>
+<hr>
+<blockquote>
+<p>直观地看，线性空间就是一个<em>非空集合</em>，其中的元素(称为<strong>向量</strong>)拥有封闭的<strong>加法</strong>和<strong>数乘</strong>两种运算，并满足以上8条规律。无论你定义的线性空间多么奇怪，不管它的元素是小猫还是小狗，它都满足你在《线性代数》中学到的那些规律。</p>
+</blockquote>
+<p>有了这个定义，可以举出一些常见的例子</p>
+<ul>
+<li><strong>力</strong>的全体集合构成一个线性空间</li>
+<li><strong>几何上的向量</strong>的全体集合构成一个线性空间</li>
+<li>实数域R上的全体<span class="math inline">\(m\times n\)</span><strong>矩阵</strong>组成的集合<span class="math inline">\(R^{m\times n}\)</span>，按照矩阵的加法及数与矩阵的乘法，是一个实数域上的线性空间</li>
+<li>定义在R上的<strong>函数</strong>构成的集合，按照函数的加法与函数的乘法，构成一个实数域上的线性空间<br>
+</li>
+<li>实数域上次数不超过n的<strong>多项式</strong>全体<span class="math inline">\(P[x]_n=\{a_0x^n+a_1x^{n-1} + ...a_n \mid a_0,a_1...a_n\in \boldsymbol{R}\}\)</span> 构成一个线性空间</li>
+</ul>
+<p>可以看到，线性空间是高度抽象的，可以描述很多具体的问题。这样，只要我们研究清楚线性空间这个抽象概念的性质，就可以自然推广到满足线性空间性质的所有具体问题上。这是数学化的强大力量，带我们从更一般的角度看世界。</p>
+<h2 id="线性空间的一些性质">线性空间的一些性质</h2>
+<p>线性空间中有一些特殊的向量组，向量组中的向量线性无关，用这些向量可以线性表示整个线性空间的向量，这就是线性空间的<strong>基</strong>，它不止一个，但各个基中的向量个数一定相等，这个数目也叫做线性空间的<strong>维数</strong>。用某个<strong>基</strong>线性表示一个向量的一组系数，叫做这个向量在这个 <strong>基</strong>下的<strong>坐标</strong>。构成线性空间的向量可以是任何东西，<strong>基</strong>自然是可以是任何东西，可以是一组力，亦可是一组<strong>小猫小狗</strong>。</p>
+<p>我们生存的空间可以看作一个线性空间，我们可以用三个不共面<strong>轴</strong>线性表示我们世界任意一个坐标，所以我们世界的维数是3。在没有线性空间的抽象之前，我们只知道我们这个世界有坐标有维度，殊不知矩阵的世界，函数的世界，多项式的世界，微分方程解的世界等等都可以有坐标，有维度（注意，对于无限维空间，坐标这个说法不准确）。</p>
+<p>举个函数线性空间的例子，<code>傅立叶变换</code>，就是试图将一个函数用一组正交(也是线性无关)的三角函数表示，只不过这个函数空间维度有点高，是无限维。</p>
+<h2 id="重新理解线性方程组">重新理解线性方程组</h2>
+<p>线性方程组 <span class="math display">\[
+\left\{\begin{matrix}
+a_{11}x_1+ a_{12}x_2 +  \dots +a_{1n}x_n = b_1
+\\
+\cdots
+\\
+a_{m1}x_1+ a_{m2}x_2 + \dots +a_{mn}x_n = b_m
+\\
+\end{matrix}\right.
+\]</span> 可以写作 <span class="math display">\[
+(\alpha_1,\alpha_2,\cdots,\alpha_n) \cdot 
+\left(\begin{array}{c}
+x_1\\
+x_2\\
+\vdots\\
+x_n
+\end{array}
+\right) = \beta
+\]</span> 其中 <span class="math inline">\(\beta= \left(\begin{array}{c} b_1\\ b_2\\ \vdots\\ b_n \end{array} \right), \alpha_i = \left(\begin{array}{c} a_{1i}\\ a_{2i}\\ \vdots\\ a_{ni} \end{array} \right)\)</span></p>
+<p>所以，线性方程组解就是<span class="math inline">\(\beta\)</span>被列向量组<span class="math inline">\((\alpha_1,\alpha_2,\cdots,\alpha_n)\)</span>线性表出的<strong>系数</strong>。方程组有没有解，完全等价于<span class="math inline">\(\beta\)</span>能不能被向量组线性表出。如果方程组有解，解唯一不唯一，完全等价于系数向量组<span class="math inline">\((\alpha_1,\alpha_2,\cdots,\alpha_n)\)</span>是否线性无关。线性无关的向量组构成某个线性空间的一组基，可以证明<span class="math inline">\(\beta\)</span>被它们线性表出的方式一定是唯一的（这也说明坐标是唯一确定的），此时线性方程组有唯一解。<br>
+(建议读者推导一下，为什么线性无关的向量表出任何一个向量的方式都是唯一的)<br>
+不知道读者看到这里，是否感受到了线性方程组和是线性空间之间的有趣关联没有。</p>
+<h2 id="坐标变换">坐标变换</h2>
+<p>上文讲到，线性空间中的每一个向量可以由<strong>基</strong>线性表示，而线性空间中的<strong>基</strong>不唯一，所以，同一个向量在不同<strong>基</strong>的线性表示下会有<strong>不同的坐标</strong>。那么将一个向量从一个<strong>基</strong>下的坐标转化为另一个<strong>基</strong>下的坐标就叫做<strong>坐标变换</strong>。</p>
+<p>那么，应该<strong>如何坐标变换</strong>变换呢。来一点数学推导吧：<br>
+设线性空间V中的两组基为<span class="math inline">\(\boldsymbol{\varepsilon_1,\varepsilon_2,...,\varepsilon_n}\)</span> 和 <span class="math inline">\(\boldsymbol{ {\varepsilon}&#39;_1, {\varepsilon}&#39;_1,...,{\varepsilon}&#39;_n}\)</span> 由于每组基都可以线性表示空间中的一个向量，所以有方程： <span class="math display">\[
+\left\{\begin{matrix}
+\boldsymbol{ {\varepsilon}&#39;_1} = a_{11}\boldsymbol{\varepsilon_1}+a_{21}\boldsymbol{\varepsilon_2}+\cdots+ a_{n1}\boldsymbol{\varepsilon_n}
+\\\boldsymbol{ {\varepsilon}&#39;_2} = a_{12}\boldsymbol{\varepsilon_1}+a_{22}\boldsymbol{\varepsilon_2}+\cdots+ a_{n2}\boldsymbol{\varepsilon_n}
+\\\vdots
+\\\boldsymbol{ {\varepsilon}&#39;_n} = a_{1n}\boldsymbol{\varepsilon_1}+a_{2n}\boldsymbol{\varepsilon_2}+\cdots+ a_{nn}\boldsymbol{\varepsilon_n}
+\end{matrix}\right.
+\]</span> 方程可写作 <span class="math display">\[
+[\boldsymbol{ {\varepsilon}&#39;_1, {\varepsilon}&#39;_1,...,{\varepsilon}&#39;_n}]=[\boldsymbol{\varepsilon_1,\varepsilon_2,...,\varepsilon_n}] \begin{bmatrix}
+a_{11} &amp; \cdots &amp; a_{1n}\\
+\vdots &amp; \ddots &amp; \vdots \\
+a_{n1} &amp; \cdots &amp; a_{nn}
+\end{bmatrix}
+\]</span> 称<span class="math inline">\(A=\begin{bmatrix} a_{11} &amp; \cdots &amp; a_{1n}\\ \vdots &amp; \ddots &amp; \vdots \\ a_{n1} &amp; \cdots &amp; a_{nn} \end{bmatrix}\)</span>为由基 <span class="math inline">\(\boldsymbol{\varepsilon_1,\varepsilon_2,...,\varepsilon_n}\)</span>(原基) 到基 <span class="math inline">\(\boldsymbol{ {\varepsilon}&#39;_1, {\varepsilon}&#39;_1,...,{\varepsilon}&#39;_n}\)</span>(新基)的<strong>过渡矩阵</strong></p>
+<p>可以证明，向量在新基下的坐标等于<strong>过渡矩阵逆矩阵左乘</strong>向量在原基下的坐标。 即 <span class="math display">\[\begin{bmatrix}a&#39;_1 \\ a&#39;_2 \\ \vdots \\ a&#39;_n\end{bmatrix}=A^{-1}\cdot\begin{bmatrix}a_1 \\ a_2 \\ \vdots \\ a_n\end{bmatrix}
+\]</span></p>
+<p>所以想要坐标变换，只需要求过渡矩阵就可以了，也就是得到上面方程的系数。</p>
+<p>可以看到，渡矩阵可以表示坐标变换，但不是所有矩阵都是这样的意义。矩阵不过就是一张表，它可以表示成绩表，工资表，方程的系数表等等，矩阵还可以表达什么呢？我们继续往下看。</p>
+<h2 id="线性映射和线性变换">线性映射和线性变换</h2>
+<blockquote>
+<p>进入这一节之前，请读者牢记一点，坐标变换<strong>不同于</strong>线性变换</p>
+</blockquote>
+<p>我们考虑从一个线性空间到另一个线性空间的一种映射，它保<strong>加法</strong>，保<strong>数乘</strong>，我们把它叫做线性映射。<br>
+<strong>定义</strong><br>
+设 <span class="math inline">\(L\)</span>,<span class="math inline">\(M\)</span>为<span class="math inline">\(F\)</span>上的数域, 如果<span class="math inline">\(f:L\rightarrow M\)</span>满足</p>
+<ul>
+<li><span class="math inline">\(\forall \alpha_1,\alpha_2 \in L \quad f(\alpha_1+\alpha_2) = f(\alpha_1) + f(\alpha_2)\)</span> <code>保加法</code></li>
+<li><span class="math inline">\(\forall \alpha \in L, \forall k \in F \quad f(k\alpha) = kf(\alpha)\)</span> <code>保数乘</code></li>
+</ul>
+<p>则称<span class="math inline">\(f\)</span>为从线性空间<span class="math inline">\(L\)</span>到线性空间<span class="math inline">\(M\)</span>的<strong>线性映射</strong>, 如果<span class="math inline">\(L\)</span>和<span class="math inline">\(M\)</span>是同一个线性空间，则称<span class="math inline">\(f\)</span>为<strong>线性变换</strong>。考虑到线性映射和线性变换很类似，本质都相同，可以认为<strong>线性变换</strong>是特殊的<strong>线性映射</strong>，下面就不做严格区分了。</p>
+<p>线性映射和线性变换普遍存在，我们常见的<code>旋转</code>、<code>拉伸</code>、<code>缩放</code>都是其中的例子。这里值得留意的是<code>平移</code><strong>不是线性变换</strong>！不信我们可以验证一下, 不可否认, 任何平移操作都是如下这种形式的映射<span class="math display">\[f(\alpha) = \alpha+v\]</span> 其中<span class="math inline">\(v\)</span>是平移偏移向量(假设不为0)，很明显它既不保数乘又不保加法:)。<code>平移</code>变换不是线性变换，但它却是仿射变换，计算机图形学中提到了一种叫<code>仿射空间</code>的东西，目的就是方便处理这类仿射变换，它能将3D游戏中经常遇到的各种变换统一，更多内容可以参考计算机图形学相关资料。</p>
+<p>我们隐约感受到<strong>线性映射</strong>一定是十分有用的东西，可是怎么把这种映射显式地表达出来呢？有没有一种简单统一的解析表达式呢？</p>
+<p>答案令人感到兴奋，不仅有，而且相当漂亮。那就是<code>矩阵</code>。线性代数告诉我们只要确定了线性映射两个空间的<strong>基</strong>，(例如<span class="math inline">\((\varepsilon_1,\cdots,\varepsilon_n)\)</span>和<span class="math inline">\((\beta_1,\cdots,\beta_m)\)</span>)，就有唯一确定的一个矩阵<span class="math inline">\(A\)</span>与之对应, 而且矩阵<span class="math inline">\(A\)</span>的每一个列向量就是对应的原基向量映射后的坐标。反之，如果基确定，任何一个矩阵都唯一确定了一个线性映射，对于一个<span class="math inline">\(m \times n\)</span>的矩阵<span class="math inline">\(A\)</span>, 表达的就是一个从n维空间向m维空间的线性映射。因此矩阵和线性映射之间建立了一种一一对应关系（基选定的情况下）[推导十分简单，但是有点啰嗦，这里就不写出来了]</p>
+<p><span class="math display">\[
+(f(\varepsilon_1),\cdots,f(\varepsilon_n)) = (\beta_1,\cdots,\beta_m)A
+\]</span></p>
+<p>具体而言，如何用矩阵表征线性映射呢？假如说，对于线性映射<span class="math inline">\(f: L\rightarrow M\)</span> 任意<span class="math inline">\(\alpha \in L\)</span>在某组基下的坐标是<span class="math inline">\(x\)</span>(列向量)，<span class="math inline">\(f(\alpha)\)</span> 的坐标是 <span class="math inline">\(x&#39;\)</span> 那么可以写出 <span class="math inline">\(x&#39;=Ax\)</span> 其中矩阵<span class="math inline">\(A\)</span>的每一个列向量就是对应的原基向量映射后的坐标。</p>
+<p>###线性变换 之前说了，线性变换是特殊的线性映射，表示一个空间到自己的线性映射（注意不一定是满射），它有些特殊的性质，这里单独讨论。</p>
+<p>对于线性变换的矩阵：</p>
+<ul>
+<li>一定是方阵<br>
+</li>
+<li>不同基下，同一个线性变换的矩阵是<strong>相似</strong>的，而相似变换矩阵<span class="math inline">\(P\)</span>为基之间的<strong>过渡矩阵</strong>,记为<span class="math inline">\(A&#39; = P^{-1}AP\)</span><br>
+</li>
+<li>它的行列式表示空间变换的<code>缩放率</code>。<br>
+</li>
+<li>它的特征向量表示在该矩阵的变换下，空间中只发生伸缩而不发生旋转的向量，而对应特征值表示伸缩率<br>
+</li>
+<li>如果可以对角化，则说明该线性映射在某组基下仅有坐标轴方向的伸缩</li>
+</ul>
+<blockquote>
+<p>特别提示 线性变换<strong>不同于</strong>坐标变换，虽然他们都能用方阵表征。坐标变换时，向量本身没变，空间也没变，只是坐标系变了。而线性变换是向量到向量的映射(函数)，输入为一个向量，输出为另一个向量，向量本身发生了改变，而此时坐标系反而没有变。由此可见它们是有本质区别的，表达的完全是不同的现象，只是因为矩阵这个工具而联系到了一起</p>
+</blockquote>
+<h2 id="欧氏空间和酉空间">欧氏空间和酉空间</h2>
+<p>如果在线性空间的基础上，再定义<strong>内积</strong>运算，就可以得到欧氏空间。定义复内积运算，就可以得到酉空间。</p>
+<p>值得注意的是，我们常用的"点积"只是内积的一种特殊情况，<strong>内积</strong>其实也是很广泛的定义，只要满足<code>线性</code>、<code>对称</code>、<code>正定</code>三个条件的任何二元运算都是内积运算。这样定义我们可以在更一般的线性空间（例如我们之前说的小猫小狗空间）定义内积，而不依赖于分量形式的向量。</p>
+<p>有意思的是，无论<strong>内积</strong>定义如何复杂，在选定基的情况下，内积都可以用一个可逆的，对称的，非负的方阵<span class="math inline">\(A\)</span>唯一表达，并称这个矩阵为<code>度量矩阵</code>。任意两个向量<span class="math inline">\(X,Y\)</span>的内积都可以写作<span class="math inline">\(X^TAY\)</span>的形式，我们常用的<strong>点积</strong>其实就是当<span class="math inline">\(A\)</span>为单位阵的特殊情况。值得注意的是，不同基下，同一个内积运算的<strong>度量矩阵</strong>是<strong>合同</strong>的，合同变换矩阵为基之间的过渡矩阵<span class="math inline">\(C\)</span>,记为 <span class="math inline">\(A&#39;=C^TAC\)</span>。可以证明，一切测度矩阵都合同于单位阵，所以，无论定义内积多么复杂，都可以看作是<strong>点积</strong>在另外一组基下的表达。</p>
+<p>有了内积，我们就可以得到一些诸如正交(垂直)，投影，角度，距离等相关的性质。有了距离是不是就有了微积分那套理论了呢？～内容太丰富，这里就不展开讲了。</p>
+<p>(这部分未完待续^_^)</p>
+<h2 id="小尾巴">小尾巴</h2>
+<p>如果你和我一样是学计算机/软件的，千万不要害怕数学。正是数学化和抽象化赋予了我们现代文明，赋予了我们认知世界的科学方法。抽象化的力量是强大的，如同写程序，面向对象的抽象设计理念，让我们有能力去构建更大更复杂的系统。</p>
+<p>世界的美好不仅是幸福、安逸和享乐，还有享受探索，理解世界带来的无尽快乐。</p>
+<p>--</p>
+<h2 id="参考文献">参考文献</h2>
+<p>[1] Strang, G. (1993). The Fundamental Theorem of Linear Algebra. The American Mathematical Monthly, 100(9), 848-855.</p>
+</section>
+    <!-- Tags START -->
+    
+      <div class="tags">
+        <span>Tags:</span>
+        
+  <a href="/tags#线性代数">
+    <span class="tag-code">线性代数</span>
+  </a>
+
+  <a href="/tags#线性空间">
+    <span class="tag-code">线性空间</span>
+  </a>
+
+      </div>
+    
+    <!-- Tags END -->
+    <!-- NAV START -->
+    
+  <div class="nav-container">
+    <!-- reverse left and right to put prev and next in a more logic postition -->
+    
+      <a class="nav-left" href="/2017/10/07/搭建一个舒服的hexo博客/">
+        <span class="nav-arrow">← </span>
+        
+          搭建一个舒服的hexo博客
+        
+      </a>
+    
+    
+      <a class="nav-right" href="/2017/10/12/理解颜色/">
+        
+          理解颜色
+        
+        <span class="nav-arrow"> →</span>
+      </a>
+    
+  </div>
+
+    <!-- NAV END -->
+    <!-- 打赏 START -->
+    
+      <div class="money-like">
+        <div class="reward-btn">
+          赞
+          <span class="money-code">
+            <span class="alipay-code">
+              <div class="code-image"></div>
+              <b>使用支付宝打赏</b>
+            </span>
+            <span class="wechat-code">
+              <div class="code-image"></div>
+              <b>使用微信打赏</b>
+            </span>
+          </span>
+        </div>
+        <p class="notice">支持原创，用我们自己的力量</p>
+      </div>
+    
+    <!-- 打赏 END -->
+    <!-- 二维码 START -->
+    
+    <!-- 二维码 END -->
+    
+      <!-- No Comment -->
+    
+  </article>
+  <!-- Article END -->
+  <!-- Catalog START -->
+  
+    <aside class="catalog-container">
+  <div class="toc-main">
+    <strong class="toc-title">Catalog</strong>
+    
+      <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#前言"><span class="toc-nav-text">前言</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#什么是线性空间"><span class="toc-nav-text">什么是线性空间</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#线性空间的一些性质"><span class="toc-nav-text">线性空间的一些性质</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#重新理解线性方程组"><span class="toc-nav-text">重新理解线性方程组</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#坐标变换"><span class="toc-nav-text">坐标变换</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#线性映射和线性变换"><span class="toc-nav-text">线性映射和线性变换</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#欧氏空间和酉空间"><span class="toc-nav-text">欧氏空间和酉空间</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#小尾巴"><span class="toc-nav-text">小尾巴</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#参考文献"><span class="toc-nav-text">参考文献</span></a></li></ol>
+    
+  </div>
+</aside>
+  
+  <!-- Catalog END -->
+</main>
+
+<script>
+  (function () {
+    var url = 'https://scientificrat.com/2017/10/11/回顾线性空间/';
+    var banner = ''
+    if (banner !== '' && banner !== 'undefined' && banner !== 'null') {
+      $('#article-banner').css({
+        'background-image': 'url(' + banner + ')'
+      })
+    } else {
+      $('#article-banner').geopattern(url)
+    }
+    $('.header').removeClass('fixed-header')
+
+    // error image
+    $(".markdown-content img").on('error', function() {
+      $(this).attr('src', 'http://file.muyutech.com/error-img.png')
+      $(this).css({
+        'cursor': 'default'
+      })
+    })
+
+    // zoom image
+    $(".markdown-content img").on('click', function() {
+      var src = $(this).attr('src')
+      if (src !== 'http://file.muyutech.com/error-img.png') {
+        var imageW = $(this).width()
+        var imageH = $(this).height()
+
+        var zoom = ($(window).width() * 0.95 / imageW).toFixed(2)
+        zoom = zoom < 1 ? 1 : zoom
+        zoom = zoom > 2 ? 2 : zoom
+        var transY = (($(window).height() - imageH) / 2).toFixed(2)
+
+        $('body').append('<div class="image-view-wrap"><div class="image-view-inner"><img src="'+ src +'" /></div></div>')
+        $('.image-view-wrap').addClass('wrap-active')
+        $('.image-view-wrap img').css({
+          'width': `${imageW}`,
+          'transform': `translate3d(0, ${transY}px, 0) scale3d(${zoom}, ${zoom}, 1)`
+        })
+        $('html').css('overflow', 'hidden')
+
+        $('.image-view-wrap').on('click', function() {
+          $(this).remove()
+          $('html').attr('style', '')
+        })
+      }
+    })
+  })();
+</script>
+
+
+
+
+
+
+
+    <div class="scroll-top">
+  <span class="arrow-icon"></span>
+</div>
+    <footer class="app-footer">
+  <p class="copyright">
+    Zhengyue Huang &copy; 2019 | Proudly powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+    <br>
+    Theme by <a href="https://github.com/yanm1ng">vexo</a>
+  </p>
+</footer>
+
+<script>
+  function async(u, c) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+</script>
+<script>
+  async("//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js", function(){
+    FastClick.attach(document.body);
+  })
+</script>
+
+<script>
+  var hasLine = 'false';
+  async("//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js", function(){
+    $('figure pre').each(function(i, block) {
+      var figure = $(this).parents('figure');
+      if (hasLine === 'false') {
+        figure.find('.gutter').hide();
+      }
+      var lang = figure.attr('class').split(' ')[1] || 'code';
+      var codeHtml = $(this).html();
+      var codeTag = document.createElement('code');
+      codeTag.className = lang;
+      codeTag.innerHTML = codeHtml;
+      $(this).attr('class', '').empty().html(codeTag);
+      figure.attr('data-lang', lang.toUpperCase());
+      hljs.highlightBlock(block);
+    });
+  })
+</script>
+<!-- Baidu Tongji -->
+
+<script src="/js/script.js"></script>
+  </body>
+</html>

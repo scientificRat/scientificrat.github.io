@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+  <meta name="description" content="scientificrat&#39;s blog">
+  <meta name="keyword" content="编程, 程序, 软件, 数学">
+  
+    <link rel="shortcut icon" type="image/ico" href="/favicon.png">
+  
+  <title>
+    
+      搭建一个舒服的hexo博客 | 黄鼠博客
+    
+  </title>
+  <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" rel="stylesheet">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/geopattern/1.2.3/js/geopattern.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+  
+  
+  
+  
+    <!-- MathJax support START -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <!-- MathJax support END -->
+  
+
+
+</head>
+<div class="wechat-share">
+  <img src="/css/images/logo.png">
+</div>
+
+  <body>
+    <header class="header fixed-header">
+  <div class="header-container">
+    <a class="home-link" href="/">
+      <div class="logo"></div>
+      <span>黄鼠博客</span>
+    </a>
+    <ul class="right-list">
+      
+        <li class="list-item">
+          
+            <a href="/" class="item-link">Home</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/tags/" class="item-link">Tags</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/archives/" class="item-link">Archives</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/project/" class="item-link">Projects</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/about/" class="item-link">About</a>
+          
+        </li>
+      
+    </ul>
+    <div class="menu">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </div>
+    <div class="menu-mask">
+      <ul class="menu-list">
+        
+          <li class="menu-item">
+            
+              <a href="/" class="menu-link">Home</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/tags/" class="menu-link">Tags</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/archives/" class="menu-link">Archives</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/project/" class="menu-link">Projects</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/about/" class="menu-link">About</a>
+            
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</header>
+
+    <div id="article-banner">
+  <h2>搭建一个舒服的hexo博客</h2>
+  <p class="post-date">2017-10-07</p>
+  <div class="arrow-down">
+    <a href="javascript:;"></a>
+  </div>
+</div>
+<main class="app-body flex-box">
+  <!-- Article START -->
+  <article class="post-article">
+    <section class="markdown-content"><blockquote>
+<p>一个方便舒适的博客环境可以激发人写博客的欲望<br>
+(本文是作者搭建自己博客时的杂记，属于主观论述，<strong>不讲道理的</strong>)</p>
+</blockquote>
+<h2 id="搭建博客的几种思路">搭建博客的几种思路</h2>
+<p>目前，搭建博客大概有这么种思路</p>
+<ol type="1">
+<li>完全自建博客</li>
+<li>使用 <code>hexo</code> + <code>github pages</code> 自建博客</li>
+<li>使用 <code>wordpress</code> 自建博客</li>
+<li>使用现有平台，例如CSND，简书，wordpress.com 等等</li>
+</ol>
+<p>四种方法，搭建和维护难度依次下降，可定制的程度也依次下降。完全自建博客可定制程度虽然高，但是想要达到好用的标准，搭建需要花费很多时间，博客应该专注内容，造轮子的工作还是没有必要。但是也不能走到另一个极端选择现有平台，基本的轮子是没有造的必要，但我需要能够安装新轮子和改造轮子的接口。博客可能有很多个性化的需求或者未来可潜在功能，所以，可扩展性、可定制性也是我选择博客搭建方式的一个重要标准。</p>
+<h2 id="详细对比">详细对比</h2>
+<p>使用<strong>hexo</strong>和<strong>wordpress</strong>(wordpress.org not .com)的可定制性差不多。不同的是，hexo生成的是<strong>静态内容</strong>（不考虑使用hexo server），而wordpress是明显的<strong>动态内容</strong>。因此，hexo生成的静态博客如果需要后台服务，则需要使用第三方服务，或者自己另外开发服务，为前台提供接口。从这个角度讲wordpress定制内容似乎要方便些。而且，由于有了后台服务，wordpress可以提供比较完美的后台管理，后台创作的功能（而hexo sever的后台管理功能弱到不能用，所以我都不考虑用hexo server，而只是用hexo生成静态内容）。但<code>hexo + github pages</code>也有它的优势:</p>
+<ol type="1">
+<li>十分简洁清爽（wordpress已经臃肿到我的服务器卡顿的程度了）</li>
+<li>不用维护一台服务器(贵)</li>
+<li>不用域名备案</li>
+<li>数据上传github，不担心数据丢失</li>
+</ol>
+<p>在wordpress和hexo之间是在实在是难以取舍，hexo简单舒服，维护成本极低，托管在github上还安全省心。但wordpress又有更高的可定制性和更低的创作成本，确实十分纠结。于是我列下了几条我当下的需求，以确定我到底应该怎么建博客</p>
+<ol type="1">
+<li>支持Markdown, 并且支持实时预览</li>
+<li>支持Mathjax, 我需要书写数学公式</li>
+<li>前端漂亮美观</li>
+<li>支持评论点赞功能</li>
+<li>不使用自己的服务器</li>
+<li>不域名备案</li>
+</ol>
+<h2 id="使用hexo搭建舒服的博客">使用hexo搭建舒服的博客</h2>
+<blockquote>
+<p>考虑了很久，我还是决定暂时使用hexo搭建博客</p>
+</blockquote>
+<p>考虑上面的几条需求，第一条，<strong>支持markdown</strong>，这个是hexo本身就支持了，但为了<strong>支持实时预览</strong>,就要使用<em>hexo-admin </em>或者<em>本地markdown编辑工具</em>，使用<em>hexo-admin</em>看起来很不错 <img src="/images/pasted-0.jpg" alt="upload successful"> 同时支持<code>command</code>+<code>v</code>复制上传图片。看起来很棒，但是，糟糕的是不支持<strong>MathJax</strong>, 也就是<strong>不满足第二条需求</strong>，我尝试去修改<em>hexo-admin</em>的代码，使其支持mathjax，但是，渲染有一定问题，带来了卡顿，页面变形等副作用，并且不能动态渲染，要刷新一下页面才行，总之，还有些技术问题没有解决。除此之外，这个<em>hexo-admin</em>不支持markdown生成预览的<strong>css</strong>样式表，我也尝试去修改其源代码，却发现它渲染预览图使用的css 和整体页面使用的css <strong>并不独立</strong>而是耦合在一起的。对此我十分无语，本想拷贝一个别处的css定制预览样式的计划泡汤。这两点让我十分不满，索性使用<strong>本地markdown编辑器</strong>(我使用的是<a href="http://macdown.uranusjr.com/" target="_blank" rel="noopener">macdown</a>,它支持类似mathjax的latex公式)。可是使用本地编辑器有致命的缺点，<strong>资源路径不对</strong>,<br>
+例如，example.png在souce目录下images子目录下<br>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ path/to/blog-root/<span class="built_in">source</span>/images/example.png</span><br></pre></td></tr></table></figure></p>
+<p>我们写的文章在_posts 子目录下 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ path/to/blog-root/<span class="built_in">source</span>/_posts</span><br></pre></td></tr></table></figure></p>
+<p>而hexo要求我们这样访问example.png <figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">![](/images/example.png)</span><br></pre></td></tr></table></figure></p>
+<p>显然，这样的图片路径是无法被本地编辑器正确找到的。<br>
+为了解决这个麻烦，我的解决方案是使用软连接，<strong>在系统根目录创建一个指向images目录的软链接)</strong> <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo ln -s path/to/blog-root/<span class="built_in">source</span>/images /</span><br></pre></td></tr></table></figure></p>
+<p>这样就可以在本地编辑器中正常编辑预览了。</p>
+<p>为了支持Mathjax，我们还需要选择一个支持Mathjax的主题，或者自己定制（插入一段js即可）。这不是关键，最麻烦的是hexo的默认markdown渲染器<code>marked</code><strong>不能正常解析latex公式中的</strong> <span class="math inline">\(\_\)</span>、<span class="math inline">\(\}\}\)</span>、<span class="math inline">\(\{\{\)</span><strong>等符号 </strong>所以，需要更换默认渲染器，更换为更强大的pandoc, 在mac中可按以下操作执行： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ brew install pandoc <span class="comment"># 安装本地pandoc程序</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm uninstall hexo-renderer-marked --save</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm install hexo-renderer-pandoc --save</span><br></pre></td></tr></table></figure>
+<p>然而，这也不能完全解决<strong>不能正常解析latex公式中的一些符号</strong>的问题，hexo-renderer-pandoc 不能正常解析<code>\\</code> 符号组, 因此不能正常识别latex的开始结束标志，如<code>\\[</code>、<code>\\(</code>等。到此，也只能屈服，写文章时不使用<code>\\[</code>、<code>\\(</code>等标志，而使用mathjax 同样支持的<code>$</code>、<code>$$</code>标志。</p>
+<p>至此，我用本地markdown编辑器的方式加上一点点定制，解决了前两个需求。至于后几个需求就十分简单了<br>
+<strong>漂亮的前端</strong>可以到<a href="https://hexo.io/themes/" target="_blank" rel="noopener">hexo themes</a>中挑选, 不满意的地方还可以修改。<br>
+<strong>评论点赞功能</strong>可以使用<em>gitment</em>或者<em>uyan</em>等第三方服务，只不过笔者对这些服务都不是很满意，打算以后自己开发。 <strong>不使用自己的服务器</strong>将网站部署到GitHub Pages即可。<br>
+<strong>不域名备案</strong>，GitHub的服务器在国外，配置自己的域名解析规则即可，不用域名备案。</p>
+<h2 id="小尾巴">小尾巴</h2>
+<p>第一次搭建博客确实遇到不少困难，实在是难以找到一个完美的方案满足我的需求。 我进一步的打算是改造<strong>hexo-admin</strong>,让它支持mathjax，支持自定义css（目前看还有点难度）。然后把hexo-server挂在一台服务器上，专门用来管理部署。内容还是托管在github pages上，避免潜在的黑客攻击和数据丢失的风险。</p>
+</section>
+    <!-- Tags START -->
+    
+      <div class="tags">
+        <span>Tags:</span>
+        
+  <a href="/tags#闲谈">
+    <span class="tag-code">闲谈</span>
+  </a>
+
+      </div>
+    
+    <!-- Tags END -->
+    <!-- NAV START -->
+    
+  <div class="nav-container">
+    <!-- reverse left and right to put prev and next in a more logic postition -->
+    
+      <a class="nav-left" href="/2017/10/05/开始写博客/">
+        <span class="nav-arrow">← </span>
+        
+          开始写博客
+        
+      </a>
+    
+    
+      <a class="nav-right" href="/2017/10/11/回顾线性空间/">
+        
+          回顾线性空间
+        
+        <span class="nav-arrow"> →</span>
+      </a>
+    
+  </div>
+
+    <!-- NAV END -->
+    <!-- 打赏 START -->
+    
+      <div class="money-like">
+        <div class="reward-btn">
+          赞
+          <span class="money-code">
+            <span class="alipay-code">
+              <div class="code-image"></div>
+              <b>使用支付宝打赏</b>
+            </span>
+            <span class="wechat-code">
+              <div class="code-image"></div>
+              <b>使用微信打赏</b>
+            </span>
+          </span>
+        </div>
+        <p class="notice">支持原创，用我们自己的力量</p>
+      </div>
+    
+    <!-- 打赏 END -->
+    <!-- 二维码 START -->
+    
+    <!-- 二维码 END -->
+    
+      <!-- No Comment -->
+    
+  </article>
+  <!-- Article END -->
+  <!-- Catalog START -->
+  
+    <aside class="catalog-container">
+  <div class="toc-main">
+    <strong class="toc-title">Catalog</strong>
+    
+      <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#搭建博客的几种思路"><span class="toc-nav-text">搭建博客的几种思路</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#详细对比"><span class="toc-nav-text">详细对比</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#使用hexo搭建舒服的博客"><span class="toc-nav-text">使用hexo搭建舒服的博客</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#小尾巴"><span class="toc-nav-text">小尾巴</span></a></li></ol>
+    
+  </div>
+</aside>
+  
+  <!-- Catalog END -->
+</main>
+
+<script>
+  (function () {
+    var url = 'https://scientificrat.com/2017/10/07/搭建一个舒服的hexo博客/';
+    var banner = ''
+    if (banner !== '' && banner !== 'undefined' && banner !== 'null') {
+      $('#article-banner').css({
+        'background-image': 'url(' + banner + ')'
+      })
+    } else {
+      $('#article-banner').geopattern(url)
+    }
+    $('.header').removeClass('fixed-header')
+
+    // error image
+    $(".markdown-content img").on('error', function() {
+      $(this).attr('src', 'http://file.muyutech.com/error-img.png')
+      $(this).css({
+        'cursor': 'default'
+      })
+    })
+
+    // zoom image
+    $(".markdown-content img").on('click', function() {
+      var src = $(this).attr('src')
+      if (src !== 'http://file.muyutech.com/error-img.png') {
+        var imageW = $(this).width()
+        var imageH = $(this).height()
+
+        var zoom = ($(window).width() * 0.95 / imageW).toFixed(2)
+        zoom = zoom < 1 ? 1 : zoom
+        zoom = zoom > 2 ? 2 : zoom
+        var transY = (($(window).height() - imageH) / 2).toFixed(2)
+
+        $('body').append('<div class="image-view-wrap"><div class="image-view-inner"><img src="'+ src +'" /></div></div>')
+        $('.image-view-wrap').addClass('wrap-active')
+        $('.image-view-wrap img').css({
+          'width': `${imageW}`,
+          'transform': `translate3d(0, ${transY}px, 0) scale3d(${zoom}, ${zoom}, 1)`
+        })
+        $('html').css('overflow', 'hidden')
+
+        $('.image-view-wrap').on('click', function() {
+          $(this).remove()
+          $('html').attr('style', '')
+        })
+      }
+    })
+  })();
+</script>
+
+
+
+
+
+
+
+    <div class="scroll-top">
+  <span class="arrow-icon"></span>
+</div>
+    <footer class="app-footer">
+  <p class="copyright">
+    Zhengyue Huang &copy; 2019 | Proudly powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+    <br>
+    Theme by <a href="https://github.com/yanm1ng">vexo</a>
+  </p>
+</footer>
+
+<script>
+  function async(u, c) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+</script>
+<script>
+  async("//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js", function(){
+    FastClick.attach(document.body);
+  })
+</script>
+
+<script>
+  var hasLine = 'false';
+  async("//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js", function(){
+    $('figure pre').each(function(i, block) {
+      var figure = $(this).parents('figure');
+      if (hasLine === 'false') {
+        figure.find('.gutter').hide();
+      }
+      var lang = figure.attr('class').split(' ')[1] || 'code';
+      var codeHtml = $(this).html();
+      var codeTag = document.createElement('code');
+      codeTag.className = lang;
+      codeTag.innerHTML = codeHtml;
+      $(this).attr('class', '').empty().html(codeTag);
+      figure.attr('data-lang', lang.toUpperCase());
+      hljs.highlightBlock(block);
+    });
+  })
+</script>
+<!-- Baidu Tongji -->
+
+<script src="/js/script.js"></script>
+  </body>
+</html>

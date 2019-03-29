@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+  <meta name="description" content="scientificrat&#39;s blog">
+  <meta name="keyword" content="编程, 程序, 软件, 数学">
+  
+    <link rel="shortcut icon" type="image/ico" href="/favicon.png">
+  
+  <title>
+    
+      Linux 权限管理的一些麻烦 | 黄鼠博客
+    
+  </title>
+  <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" rel="stylesheet">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/geopattern/1.2.3/js/geopattern.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+  
+  
+  
+  
+    <!-- MathJax support START -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <!-- MathJax support END -->
+  
+
+
+</head>
+<div class="wechat-share">
+  <img src="/css/images/logo.png">
+</div>
+
+  <body>
+    <header class="header fixed-header">
+  <div class="header-container">
+    <a class="home-link" href="/">
+      <div class="logo"></div>
+      <span>黄鼠博客</span>
+    </a>
+    <ul class="right-list">
+      
+        <li class="list-item">
+          
+            <a href="/" class="item-link">Home</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/tags/" class="item-link">Tags</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/archives/" class="item-link">Archives</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/project/" class="item-link">Projects</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/about/" class="item-link">About</a>
+          
+        </li>
+      
+    </ul>
+    <div class="menu">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </div>
+    <div class="menu-mask">
+      <ul class="menu-list">
+        
+          <li class="menu-item">
+            
+              <a href="/" class="menu-link">Home</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/tags/" class="menu-link">Tags</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/archives/" class="menu-link">Archives</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/project/" class="menu-link">Projects</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/about/" class="menu-link">About</a>
+            
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</header>
+
+    <div id="article-banner">
+  <h2>Linux 权限管理的一些麻烦</h2>
+  <p class="post-date">2018-12-03</p>
+  <div class="arrow-down">
+    <a href="javascript:;"></a>
+  </div>
+</div>
+<main class="app-body flex-box">
+  <!-- Article START -->
+  <article class="post-article">
+    <section class="markdown-content"><blockquote>
+<p>sudo chmod -R 666 / 你真的了解linux权限管理吗 ?</p>
+</blockquote>
+<ul>
+<li>本文仅仅是罗列一些问题和麻烦，并没有深入分析一些问题，笔者暂时没有分析Linux代码的精力，如果你对文中提到的问题有更好的想法，欢迎留言<br>
+</li>
+<li>本文在ubuntu上测试</li>
+</ul>
+<h3 id="问题">问题</h3>
+<p>Q1: <code>read</code> <code>write</code> <code>excute</code> 权限对于<strong>文件</strong>和<strong>文件夹</strong>分别意味着什么？文件夹的可执行权限是什么意思</p>
+<p>Q2: 为什么other权限为<strong>0</strong>的文件还是被人重命名了？甚至被人删除了？</p>
+<p>Q3: 根目录下这个tmp文件夹这个 <strong>t</strong> 是什么权限?<br>
+​ drwxrwxrw<strong>t</strong> 7115 root root 262144 Dec 2 22:28 tmp/</p>
+<p>Q4: 这里原本应该是x, 这个<strong>s</strong>代表什么？有什么作用？<br>
+​ -rw<strong>s</strong>r-xr-x 1 root root 54256 May 17 2017 /usr/bin/passwd*</p>
+<h3 id="基础">基础</h3>
+<ul>
+<li>如果你不知道 <code>drwxrwxrwx</code> 表示权限777的文件夹</li>
+<li>如果你不知道 <code>-rw-rw-r--</code> 表示权限664的普通文件</li>
+<li>如果你不知道第一个位置 l 代表链接文件，c代表character设备, p代表管道....</li>
+<li>如果你不知道这三个数字与 owner, group, other 权限的关联</li>
+<li>如果你不知道为什么需要权限管理</li>
+<li>如果你不知道修改权限<strong>并不能</strong>修改文件的拥有者（chown）</li>
+</ul>
+<p>请，先查阅资料，<strong>本文假设这些你都知道: ) </strong></p>
+<h3 id="传统unix-权限管理系统">传统unix 权限管理系统</h3>
+<ul>
+<li>对于文件<br>
+r: 读文件内容 w：写文件内容 x: 执行文件<br>
+</li>
+<li>对于文件夹<br>
+r: 读文件夹中文件/文件夹的<strong>名字</strong><br>
+x: 搜索/访问权限，访问文件夹中的文件/文件夹<br>
+w: 创建 、删除、遍历(如cd)、移动子文件/文件夹</li>
+</ul>
+<p>看起来很简单，其实有很多坑，文件夹的x权限定义其实并不明确，我只观察到现象，但不是很明白原因。</p>
+<h4 id="正常的文件夹都有x权限">正常的文件夹都有x权限</h4>
+<p>正常的文件夹都有x权限，如果你不想给你个文件夹x权限，绝大多数情况下你不需要给另外两种权限。例如，你不想让某个文件夹被访问，r=0,w=0,x=0就好</p>
+<p>下面会讨论没有x权限的文件夹，却设置了r，w造成的奇怪现象</p>
+<h4 id="没有x的文件夹w没有意义">没有x的文件夹，w没有意义</h4>
+<p>搜索/访问权限被认为是创建、删除、遍历、移动的基础。没有x权限，w权限给定的一切都无从谈起。而且这样的文件夹它的子文件/文件夹的权限也没有意义，因为它们都不能被访问，管它有什么权限都无济于事。</p>
+<p>(下面ls 一大堆问号不是编码错误，而是没有x权限导致无法访问到子文件/文件夹的meta-info)</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ chmod 600 <span class="built_in">test</span></span><br><span class="line">$ ll <span class="built_in">test</span></span><br><span class="line">ls: cannot access <span class="string">'test/b'</span>: Permission denied</span><br><span class="line">ls: cannot access <span class="string">'test/..'</span>: Permission denied</span><br><span class="line">ls: cannot access <span class="string">'test/m'</span>: Permission denied</span><br><span class="line">ls: cannot access <span class="string">'test/c2'</span>: Permission denied</span><br><span class="line">ls: cannot access <span class="string">'test/.'</span>: Permission denied</span><br><span class="line">total 0</span><br><span class="line">d????????? ? ? ? ?            ? ./</span><br><span class="line">d????????? ? ? ? ?            ? ../</span><br><span class="line">-????????? ? ? ? ?            ? b</span><br><span class="line">-????????? ? ? ? ?            ? c2</span><br><span class="line">d????????? ? ? ? ?            ? m/</span><br><span class="line">$ rm -f <span class="built_in">test</span>/b</span><br><span class="line">rm: cannot remove <span class="string">'test/b'</span>: Permission denied</span><br><span class="line">$ mv <span class="built_in">test</span>/b <span class="built_in">test</span>/c</span><br><span class="line">mv: failed to access <span class="string">'test/c'</span>: Permission denied</span><br></pre></td></tr></table></figure>
+<p>因此，不同于<strong>文件</strong>如果你想的是给一个<strong>文件夹</strong>开放所有读和写的权限，chmod 666 是不对的，而应该chomd 777</p>
+<p>如果你一不小心<code>sudo chmod -R 666 /</code> 这将带来巨大的权限问题，没有x权限，所有非root运行的程序都因不能访问而无法执行...</p>
+<h4 id="没有x的文件夹r有意义">没有x的文件夹，r有意义</h4>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ll <span class="built_in">test</span></span><br><span class="line">ls: cannot access <span class="string">'test/b'</span>: Permission denied</span><br><span class="line">ls: cannot access <span class="string">'test/..'</span>: Permission denied</span><br><span class="line">ls: cannot access <span class="string">'test/m'</span>: Permission denied</span><br><span class="line">ls: cannot access <span class="string">'test/c2'</span>: Permission denied</span><br><span class="line">ls: cannot access <span class="string">'test/.'</span>: Permission denied</span><br><span class="line">total 0</span><br><span class="line">d????????? ? ? ? ?            ? ./</span><br><span class="line">d????????? ? ? ? ?            ? ../</span><br><span class="line">-????????? ? ? ? ?            ? b</span><br><span class="line">-????????? ? ? ? ?            ? c2</span><br><span class="line">d????????? ? ? ? ?            ? m/</span><br></pre></td></tr></table></figure>
+<p>没有x的文件夹，w无意义，但r却是有意义的。如以上所示，这样的文件夹能读到子文件/文件夹的名字，但仅限于此。更多的信息都不能读到（meta-info ，创建时间，权限、所有者等等）</p>
+<h4 id="有x没有r的文件夹权限很高">有x没有r的文件夹，权限很高</h4>
+<p>你可能认为不给文件夹读的权限，ls都看不了，其它操作肯定也是寸步难行。但其实不是这样的, <strong>拥有wx权限的文件夹几乎拥有所有权限</strong></p>
+<p>这样的文件夹，仅仅是不能读到目录中名字，如果你知道你要访问对象的名字，<strong>一切操作正常</strong>, 图谋不轨的人若想知道这个文件夹下的所有文件是可以爆破得到的。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ chmod 100 <span class="built_in">test</span></span><br><span class="line">$ <span class="built_in">cd</span> <span class="built_in">test</span></span><br><span class="line">$ <span class="built_in">pwd</span></span><br><span class="line">/home/ubuntu/<span class="built_in">test</span></span><br><span class="line">$ ls</span><br><span class="line">ls: cannot open directory <span class="string">'.'</span>: Permission denied</span><br><span class="line">$ ls a</span><br><span class="line">-rwxrwxrwx 1 ubuntu ubuntu 0 Dec  2 23:46 a* <span class="comment">### 虽然没有r权限，但是指定名字后任然能读到它的所有信息</span></span><br><span class="line">$ cat a</span><br><span class="line"><span class="comment">## 下面这两个还需要写权限 chmod 300  </span></span><br><span class="line"></span><br><span class="line">$ mv b a</span><br><span class="line">$ cp a b</span><br></pre></td></tr></table></figure>
+<h4 id="移动重命名删除创建文件是上一级文件夹的权限">移动/重命名/删除/创建文件是上一级文件夹的权限</h4>
+<p>如果上一级文件夹有w和x权限，你自己的文件<strong>什么权限都没有</strong>，仍然可以被<strong>移动/重命名/删除</strong></p>
+<p>所以，即使你给other用户关闭了w权限(例如 chmod 700), other用户虽然不能修改你文件的内容，但却可以把它删掉，甚至是替换成另一个同名的文件。如果在你的发布的应用中没有注意这一点，将带来极大的安全隐患。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ chmod 700 .</span><br><span class="line">$ chmod 000 a</span><br><span class="line">$ ls -l .</span><br><span class="line">drwx------  3 ubuntu ubuntu 4096 Dec  3 00:11 ./</span><br><span class="line">drwxr-xr-x 23 ubuntu ubuntu 4096 Dec  2 23:46 ../</span><br><span class="line">----------  1 ubuntu ubuntu    0 Dec  2 23:46 a</span><br></pre></td></tr></table></figure>
+<p>对应地，<strong>拥有一个文件的所有权限</strong>，但如果上级文件夹没有wx权限（例如仅有rx），你任然无法对它重命名/移动/删除</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ chmod 500 <span class="built_in">test</span></span><br><span class="line">$ <span class="built_in">cd</span> <span class="built_in">test</span></span><br><span class="line">$ chmod 777 b</span><br><span class="line">$ rm -f b</span><br><span class="line">rm: cannot remove <span class="string">'b'</span>: Permission denied</span><br></pre></td></tr></table></figure>
+<p>这种情况时有发生，如果你不了解这个机制就会给你带来困惑。如果别的用户让你在他的目录下操作一个文件，他把这个文件全部权限都给你，chmod 777 ，甚至把owner 转移给你，你发现你还是不能对这个文件进行重命名/移动/删除，他没有考虑到外面那个文件夹在默认创建时的权限是775， 没有w权限。</p>
+<h4 id="默认权限">默认权限</h4>
+<ul>
+<li>在你创建(touch, mkdir 等)，cp (不管它原来文件的权限怎么样)，文件默认权限 664 文件夹默认权限 775</li>
+<li>不管cp前文件拥有者是谁，cp后的文件属于你</li>
+<li>gcc 编译生成的可执行文件权限是775, 其它用户可执行，但不能修改</li>
+</ul>
+<h4 id="root">root</h4>
+<p>root用户拥有所有权限，哪怕它的权限是000。root 就是这么厉害，不要轻易使用root用户</p>
+<h3 id="更复杂的细粒度权限管理">更复杂的细粒度权限管理</h3>
+<h4 id="sticky-bit">sticky bit</h4>
+<p>根目录下这个tmp文件夹这个 <strong>t</strong> 是什么权限?</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ll -d /tmp</span><br><span class="line">drwxrwxrwt 7115 root root 262144 Dec  3 11:55 /tmp/</span><br></pre></td></tr></table></figure>
+<p>/tmp 文件夹是一个允许所有用户在其中存放临时文件的目录。它允许随意添加，删除，修改，移动自己创建的文件，但是<strong>不能动别人的东西</strong>，仅用rwx权限管理系统做不到这一点，它不能做到用户级的区分，只能粗略地区分owner、group、other。</p>
+<p>这种共享的文件夹其实还是很实用的，你可能需要在多人共享的服务器上建立一个共享资源的文件夹，777的权限显然是不可取的，我们并不希望别人删除自己放的东西，这个时候你就需要sticky bit了</p>
+<p>设置方法很简单：<code>chmod 1777 xxxx</code>，然后ls -l 可以看到权限最后一个x变为了t</p>
+<p>需要注意的是在linux中，t权限对文件夹有效，对文件无意义</p>
+<h4 id="setuid">setuid</h4>
+<p>如果让一个程序在运行时拥有owner的权限呢？ 甚至是root的权限呢？</p>
+<p>例如sudo和passwd 这两个程序，执行它们显然需要root权限，我们可以看到它们都被设置了setuid</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ll /usr/bin/sudo</span><br><span class="line">-rwsr-xr-x 1 root root 136808 Jul  4  2017 /usr/bin/sudo*</span><br><span class="line">ll /usr/bin/passwd</span><br><span class="line">-rwsr-xr-x 1 root root 54256 May 17  2017 /usr/bin/passwd*</span><br></pre></td></tr></table></figure>
+<p>那，怎么给我们自己的程序设置setuid标记呢：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">chmod u+x</span><br><span class="line">chmod 4775</span><br><span class="line"><span class="comment">###设置过后原来的x会变为s</span></span><br><span class="line">-rwsr-xr-x</span><br></pre></td></tr></table></figure>
+<p>除此之外还有setgid，它和setuid 类似，只不过是让程序运行时拥有group的权限。</p>
+<p>这里需要注意的是如果文件没有可执行权限，setuid 和setgid 标记是没用的，s 会显示为S。</p>
+<h3 id="小结">小结</h3>
+<p>传统的unix权限管理其实有很多的缺陷，不能细粒度地指定权限，不能指定某个用户对某个文件有哪些权限。这一套机制只能说基本够用，如果你有更复杂的权限管理需要，ACL对你可能有用。</p>
+<h3 id="参考文献">参考文献</h3>
+<p>[1] Wikipedia, https://en.wikipedia.org/wiki/File_system_permissions#Traditional_Unix_permissions</p>
+</section>
+    <!-- Tags START -->
+    
+      <div class="tags">
+        <span>Tags:</span>
+        
+  <a href="/tags#技术">
+    <span class="tag-code">技术</span>
+  </a>
+
+      </div>
+    
+    <!-- Tags END -->
+    <!-- NAV START -->
+    
+  <div class="nav-container">
+    <!-- reverse left and right to put prev and next in a more logic postition -->
+    
+      <a class="nav-left" href="/2018/06/21/理解softmax分类器/">
+        <span class="nav-arrow">← </span>
+        
+          理解softmax分类器
+        
+      </a>
+    
+    
+  </div>
+
+    <!-- NAV END -->
+    <!-- 打赏 START -->
+    
+      <div class="money-like">
+        <div class="reward-btn">
+          赞
+          <span class="money-code">
+            <span class="alipay-code">
+              <div class="code-image"></div>
+              <b>使用支付宝打赏</b>
+            </span>
+            <span class="wechat-code">
+              <div class="code-image"></div>
+              <b>使用微信打赏</b>
+            </span>
+          </span>
+        </div>
+        <p class="notice">支持原创，用我们自己的力量</p>
+      </div>
+    
+    <!-- 打赏 END -->
+    <!-- 二维码 START -->
+    
+    <!-- 二维码 END -->
+    
+      <!-- No Comment -->
+    
+  </article>
+  <!-- Article END -->
+  <!-- Catalog START -->
+  
+    <aside class="catalog-container">
+  <div class="toc-main">
+    <strong class="toc-title">Catalog</strong>
+    
+      <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#问题"><span class="toc-nav-text">问题</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#基础"><span class="toc-nav-text">基础</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#传统unix-权限管理系统"><span class="toc-nav-text">传统unix 权限管理系统</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#正常的文件夹都有x权限"><span class="toc-nav-text">正常的文件夹都有x权限</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#没有x的文件夹w没有意义"><span class="toc-nav-text">没有x的文件夹，w没有意义</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#没有x的文件夹r有意义"><span class="toc-nav-text">没有x的文件夹，r有意义</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#有x没有r的文件夹权限很高"><span class="toc-nav-text">有x没有r的文件夹，权限很高</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#移动重命名删除创建文件是上一级文件夹的权限"><span class="toc-nav-text">移动/重命名/删除/创建文件是上一级文件夹的权限</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#默认权限"><span class="toc-nav-text">默认权限</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#root"><span class="toc-nav-text">root</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#更复杂的细粒度权限管理"><span class="toc-nav-text">更复杂的细粒度权限管理</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#sticky-bit"><span class="toc-nav-text">sticky bit</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#setuid"><span class="toc-nav-text">setuid</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#小结"><span class="toc-nav-text">小结</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#参考文献"><span class="toc-nav-text">参考文献</span></a></li></ol>
+    
+  </div>
+</aside>
+  
+  <!-- Catalog END -->
+</main>
+
+<script>
+  (function () {
+    var url = 'https://scientificrat.com/2018/12/03/Linux-权限管理/';
+    var banner = ''
+    if (banner !== '' && banner !== 'undefined' && banner !== 'null') {
+      $('#article-banner').css({
+        'background-image': 'url(' + banner + ')'
+      })
+    } else {
+      $('#article-banner').geopattern(url)
+    }
+    $('.header').removeClass('fixed-header')
+
+    // error image
+    $(".markdown-content img").on('error', function() {
+      $(this).attr('src', 'http://file.muyutech.com/error-img.png')
+      $(this).css({
+        'cursor': 'default'
+      })
+    })
+
+    // zoom image
+    $(".markdown-content img").on('click', function() {
+      var src = $(this).attr('src')
+      if (src !== 'http://file.muyutech.com/error-img.png') {
+        var imageW = $(this).width()
+        var imageH = $(this).height()
+
+        var zoom = ($(window).width() * 0.95 / imageW).toFixed(2)
+        zoom = zoom < 1 ? 1 : zoom
+        zoom = zoom > 2 ? 2 : zoom
+        var transY = (($(window).height() - imageH) / 2).toFixed(2)
+
+        $('body').append('<div class="image-view-wrap"><div class="image-view-inner"><img src="'+ src +'" /></div></div>')
+        $('.image-view-wrap').addClass('wrap-active')
+        $('.image-view-wrap img').css({
+          'width': `${imageW}`,
+          'transform': `translate3d(0, ${transY}px, 0) scale3d(${zoom}, ${zoom}, 1)`
+        })
+        $('html').css('overflow', 'hidden')
+
+        $('.image-view-wrap').on('click', function() {
+          $(this).remove()
+          $('html').attr('style', '')
+        })
+      }
+    })
+  })();
+</script>
+
+
+
+
+
+
+
+    <div class="scroll-top">
+  <span class="arrow-icon"></span>
+</div>
+    <footer class="app-footer">
+  <p class="copyright">
+    Zhengyue Huang &copy; 2019 | Proudly powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+    <br>
+    Theme by <a href="https://github.com/yanm1ng">vexo</a>
+  </p>
+</footer>
+
+<script>
+  function async(u, c) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+</script>
+<script>
+  async("//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js", function(){
+    FastClick.attach(document.body);
+  })
+</script>
+
+<script>
+  var hasLine = 'false';
+  async("//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js", function(){
+    $('figure pre').each(function(i, block) {
+      var figure = $(this).parents('figure');
+      if (hasLine === 'false') {
+        figure.find('.gutter').hide();
+      }
+      var lang = figure.attr('class').split(' ')[1] || 'code';
+      var codeHtml = $(this).html();
+      var codeTag = document.createElement('code');
+      codeTag.className = lang;
+      codeTag.innerHTML = codeHtml;
+      $(this).attr('class', '').empty().html(codeTag);
+      figure.attr('data-lang', lang.toUpperCase());
+      hljs.highlightBlock(block);
+    });
+  })
+</script>
+<!-- Baidu Tongji -->
+
+<script src="/js/script.js"></script>
+  </body>
+</html>

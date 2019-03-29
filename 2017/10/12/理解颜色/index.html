@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+  <meta name="description" content="scientificrat&#39;s blog">
+  <meta name="keyword" content="编程, 程序, 软件, 数学">
+  
+    <link rel="shortcut icon" type="image/ico" href="/favicon.png">
+  
+  <title>
+    
+      理解颜色 | 黄鼠博客
+    
+  </title>
+  <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" rel="stylesheet">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/geopattern/1.2.3/js/geopattern.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+  
+  
+  
+  
+    <!-- MathJax support START -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <!-- MathJax support END -->
+  
+
+
+</head>
+<div class="wechat-share">
+  <img src="/css/images/logo.png">
+</div>
+
+  <body>
+    <header class="header fixed-header">
+  <div class="header-container">
+    <a class="home-link" href="/">
+      <div class="logo"></div>
+      <span>黄鼠博客</span>
+    </a>
+    <ul class="right-list">
+      
+        <li class="list-item">
+          
+            <a href="/" class="item-link">Home</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/tags/" class="item-link">Tags</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/archives/" class="item-link">Archives</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/project/" class="item-link">Projects</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/about/" class="item-link">About</a>
+          
+        </li>
+      
+    </ul>
+    <div class="menu">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </div>
+    <div class="menu-mask">
+      <ul class="menu-list">
+        
+          <li class="menu-item">
+            
+              <a href="/" class="menu-link">Home</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/tags/" class="menu-link">Tags</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/archives/" class="menu-link">Archives</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/project/" class="menu-link">Projects</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/about/" class="menu-link">About</a>
+            
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</header>
+
+    <div id="article-banner">
+  <h2>理解颜色</h2>
+  <p class="post-date">2017-10-12</p>
+  <div class="arrow-down">
+    <a href="javascript:;"></a>
+  </div>
+</div>
+<main class="app-body flex-box">
+  <!-- Article START -->
+  <article class="post-article">
+    <section class="markdown-content"><h2 id="疑问">疑问</h2>
+<p>所有色光都可以由 <strong><span style="color:red">红</span>、<span style="color:green">绿</span>、<span style="color:blue">蓝</span></strong> 三原色合成吗？<br>
+为什么颜料的三原色是 <strong><span style="color:#F0F">红</span>、<span style="color:#FF0">黄</span>、<span style="color:#0FF">蓝</span></strong> 而 色光三原色是 <strong><span style="color:red">红</span>、<span style="color:green">绿</span>、<span style="color:blue">蓝</span></strong> 呢？<br>
+计算机如何表示颜色，又如何存储呢？<br>
+本文将<strong>自底向上</strong>，为你解答颜色和光的秘密</p>
+<h2 id="光和颜色">光和颜色</h2>
+<blockquote>
+<p><strong>光</strong>在没有指定特定上下文的情况下，就等于<strong>可见光</strong></p>
+</blockquote>
+<p>我们能看到东西，本质上是我们看到了光。人眼就好像一根天线，接收感知电磁波，光就是电磁波中能被人眼感知到的部分。电磁波的波长范围从<span class="math inline">\(-\infty\)</span> 到 $+$，而人类能感知到的大约是其中 <span class="math inline">\(400nm \sim 700nm\)</span>的部分(具体感知范围存在个体差异)，这部分电磁波谱叫做<strong>可见光谱</strong>。<br>
+<img src="/images/EM_spectrum.svg" alt="可见光谱在电磁波谱中的位置"> 上图彩色部分就是<strong>可见光谱</strong>。太阳光谱的范围是<strong>超过</strong>可见光谱的，所以你用三棱镜分解太阳光，就可以看到可见光谱<strong>所有</strong>色光（除非你买到了劣质的三棱镜🙃）</p>
+<p>作为人类，我们<strong>先进的视觉系统</strong>不仅能感知到<strong>可见光谱</strong>的电磁波，还能区分<strong>可见光谱</strong>中不同波长的电磁波，于是我们就有了<code>颜色</code>的概念。我们能区分光的<code>颜色</code>，就像调频收音机，不仅能收到信号，还能区分不同频道。</p>
+<p>然而，人类比收音机更强大的是，我们还能<strong>“收听”混合频道</strong>，并能获取信息。 <strong>可见光谱</strong>是你能看到的电磁波范围，但却不能涵盖你能感知到的全部颜色。别以为五光十色的彩虹就是你能看到的全部颜色，作为人类你不仅能感知<strong>可见光谱</strong>中这些单色光，还能感受它们的组合。举个例子，你能看见的白色就不在<strong>可见光谱</strong>中，当然，<strong>除了白色，还有大量的颜色不在可见光谱中</strong></p>
+<p>P.S.继续讲下去之前，我们先看个问题:</p>
+<blockquote>
+<p>听说色光都可以用 红、绿、蓝 三原色合成?</p>
+</blockquote>
+<p><strong>单色光</strong>就是某个固定频率的电磁波。红、绿、蓝三种色光分别有自己的频率，可是两个频率不相同的波叠加是<strong>不能</strong>得到另外一个频率的波的。<br>
+<img src="/images/X1.svg"> <span class="math display">\[X_1(t)=sin(2t)\]</span> <img src="/images/X2.svg"> <span class="math display">\[X_2(t)=sin(3t)\]</span> <img src="/images/X3.svg"> <span class="math display">\[X_3(t)=sin(2t) + sin(3t)\]</span></p>
+<p>正如上图所示，两个频率不相同的波叠加是<strong>不能</strong>得到另外一个频率的波，那三原色的概念又从何谈起呢？难道三原色不能合成单色光？那为什么我们的显示器都只用三原色来显示呢？</p>
+<p>欲知答案，我们先了解一下人的色彩视觉系统。</p>
+<h2 id="人的色彩视觉系统">人的色彩视觉系统</h2>
+<p>人眼视网膜有总体有两种感光细胞，<strong>视杆细胞(cone)</strong>和<strong>视锥细胞(rod)</strong>。光线昏暗时，视杆细胞起作用，无法分辨色彩。而光线充足时视锥细胞起作用，可以分辨色彩。<br>
+<img src="/images/Cones_SMJ2_E.svg"><br>
+视锥细胞之所以能分辨色侧，原因是视锥细胞有三种类型：S,M,L 分别对短(蓝)、中(绿)、长(红)波敏感（上图横横坐标表示光波长(nm)，纵坐标表示归一化敏感程度。图片来自wikipeida）</p>
+<p>由此可以推断：<strong>不管我们看到了什么光，复色光也好，单色光也罢，最终大脑接收到的都是三种细胞的信号强度 (R,G,B)</strong> 既然如此，我们就可以仅用三种色光，合成(叠加)后表示其它色光。</p>
+<p>所以物理上讲色光<strong>不能合成</strong>，一个频率的波加另一个频率的波<strong>不等于</strong>一个新的频率的波。但是<strong>人类感知的色光</strong>却<strong>可以合成</strong>。人眼其实很容易欺骗，它不能准确感知光的频率，而是把所有看到的色光转化为(R,G,B)三个分量传递给大脑。</p>
+<p>得益于人类这种视觉方式，我们可以简单地用三原色合成的方法制造彩色显示器。否则，倘若制造一种连续可变波长的发光机构，不知道多复杂。</p>
+<p>然而事情并没有这么简单，我们就可以仅用三种色光，合成(叠加)后表示其它色光，但却无法表示其它<strong>所有</strong>色光。如前文所述，大脑接收到的是（R,G,B）三个信号，如果我们能准确地发送给大脑这个三元组就可以让大脑感知所有色光，但要做到这点，用光做不到，怕是只能用电极刺激大脑了(emmm)。为什么说用光所不到呢，且看上图，任何一个波长的光，都不只是单纯地引起一种细胞的反应，会同时对其它细胞产生反应。这样，你输入的是(200,0,0)的一个光，大脑接收到的却可能是(200,10,16)这样一种信号。所以，色光合成的规则是比较复杂的。</p>
+<p>那么色光合成究竟满足怎样的规律呢，这个需要实验测定。(具体的实验细节和更深层次的问题笔者正在研究和思考，所以下面的内容可能有描述不准确的地方)<br>
+1931年，建立在William David Wright和John Guild的大量实验基础上，世界上第一个量化物理色光和人类感知色光的标准 <a href="https://en.wikipedia.org/wiki/CIE_1931_color_space" target="_blank" rel="noopener">CIE 1931</a> 提出</p>
+<p><img src="/images/CIE1931xy_blank.svg"></p>
+<p>标准中，有个非常有意思的图，它表示颜色之间的关系（上图）。图中马蹄形彩色区域为人类能看见的所有颜色，马蹄形上边缘的黑线表示<strong>单色光</strong>，对应的波长用蓝色字体标注。马蹄形内部颜色均为合成色光。<strong>马蹄形中(包括边缘)任意两点连线上的颜色，均可被这两端点颜色线性表示</strong>。所以，选择两个颜色就可以表示一条直线上的颜色；<strong>选择三个颜色，就可以表示它们构成的三角形内的颜色</strong></p>
+<p><img src="/images/CIE1931xy_gamut_comparison.svg"></p>
+<p>这三个颜色点选择不同，就得到了不同的<strong>色域</strong>, 比如大家熟悉的sRGB, Adobe RGB等等色域。</p>
+<p>p.s.有一个非常有意思的现象：马蹄形边缘右半段接近直线，这说明，这中间的单色光的颜色可由其它单色光合成。当然，这是指感官上的合成，不是物理上的合成。你可能看到过很多颜色相同的物体，但它们却可能发出的是不一样的光～</p>
+<p>p.s.目前笔者还没看懂如何量化人类感知颜色这个存在巨大个体差异的问题的，如果你有什么见解，欢迎评论区留言</p>
+<h2 id="计算机表示颜色">计算机表示颜色</h2>
+<p>上面讲到了色域，这些研究主要是要解决如何把一个颜色表示准确的问题。但从计算机抽象数据结构(ADT)的角度去看这个问题就很简单了，对于一个色光，我们只需要给定(r,g,b)三个分量即可。ADT不关心这个(r,g,b)坐标的<strong>基</strong>究竟是上面讨论的哪三个颜色点，<strong>也就是ADT不关心红色有多红，绿色用多绿的问题</strong>。<br>
+我们只关心R，G，B 三个分量就像坐标轴x，y，z一样张成了一个立方体。</p>
+<h4 id="关于打印颜色的表示">关于打印颜色的表示</h4>
+<p>我们使用RGB模型的时候谈论的都是色光的叠加，我们很容易用显示器显示(r,g,b)这样的数据，因为屏幕一开始是黑色的，只需要控制发光的强度，我们是在黑色的基础上做<strong>加法</strong>。但是，我们在打印的时候使用的却是颜料，我们的纸张开始是白色的，而颜料是吸光的，多一点颜料就多吸收一点光，所以我们是在白色的基础上做减法。这时我们就需要一种<strong>减色模型</strong>，那很简单，取<strong><span style="color:red">红</span>、<span style="color:green">绿</span>、<span style="color:blue">蓝</span></strong>的补色：<strong><span style="color:#0FF">青</span>、<span style="color:#F0F">品红</span>、<span style="color:#FF0">黄</span></strong>。 注意，通常说的颜料三原色 <strong><span style="color:#F0F">红</span>、<span style="color:#FF0">黄</span>、<span style="color:#0FF">蓝</span></strong> 中的红不是RGB中的红，而是品红；蓝不是RGB中的蓝，而是青。说到这里大家应该明白了问什么色光三原色和颜料三原色不同的原因了。<br>
+(关于减色模型的数学原理，本文不再探讨)</p>
+<h4 id="更多颜色的表示">更多颜色的表示</h4>
+<p>如果你有一定的计算机基础，你一定知道还有用色度，亮度，饱和度来表示颜色的方法。这种表示方法是为了适应人类的直观感受。人脑十分复杂，眼睛给它的信号是(r,g,b)三元组，但是我们意识里面却对这个三元组并不敏感，我们直观感受到的是色度，亮度，饱和度。这些颜色模型是为了适应人类的直观感受而提出的，至于它们提出的科学原理我们以后有机会再讲。</p>
+</section>
+    <!-- Tags START -->
+    
+      <div class="tags">
+        <span>Tags:</span>
+        
+  <a href="/tags#科普">
+    <span class="tag-code">科普</span>
+  </a>
+
+  <a href="/tags#计算机图形学">
+    <span class="tag-code">计算机图形学</span>
+  </a>
+
+      </div>
+    
+    <!-- Tags END -->
+    <!-- NAV START -->
+    
+  <div class="nav-container">
+    <!-- reverse left and right to put prev and next in a more logic postition -->
+    
+      <a class="nav-left" href="/2017/10/11/回顾线性空间/">
+        <span class="nav-arrow">← </span>
+        
+          回顾线性空间
+        
+      </a>
+    
+    
+      <a class="nav-right" href="/2018/04/12/pycharm设置远程interpreter/">
+        
+          Pycharm设置远程interpreter
+        
+        <span class="nav-arrow"> →</span>
+      </a>
+    
+  </div>
+
+    <!-- NAV END -->
+    <!-- 打赏 START -->
+    
+      <div class="money-like">
+        <div class="reward-btn">
+          赞
+          <span class="money-code">
+            <span class="alipay-code">
+              <div class="code-image"></div>
+              <b>使用支付宝打赏</b>
+            </span>
+            <span class="wechat-code">
+              <div class="code-image"></div>
+              <b>使用微信打赏</b>
+            </span>
+          </span>
+        </div>
+        <p class="notice">支持原创，用我们自己的力量</p>
+      </div>
+    
+    <!-- 打赏 END -->
+    <!-- 二维码 START -->
+    
+    <!-- 二维码 END -->
+    
+      <!-- No Comment -->
+    
+  </article>
+  <!-- Article END -->
+  <!-- Catalog START -->
+  
+    <aside class="catalog-container">
+  <div class="toc-main">
+    <strong class="toc-title">Catalog</strong>
+    
+      <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#疑问"><span class="toc-nav-text">疑问</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#光和颜色"><span class="toc-nav-text">光和颜色</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#人的色彩视觉系统"><span class="toc-nav-text">人的色彩视觉系统</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#计算机表示颜色"><span class="toc-nav-text">计算机表示颜色</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#关于打印颜色的表示"><span class="toc-nav-text">关于打印颜色的表示</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#更多颜色的表示"><span class="toc-nav-text">更多颜色的表示</span></a></li></ol></li></ol>
+    
+  </div>
+</aside>
+  
+  <!-- Catalog END -->
+</main>
+
+<script>
+  (function () {
+    var url = 'https://scientificrat.com/2017/10/12/理解颜色/';
+    var banner = ''
+    if (banner !== '' && banner !== 'undefined' && banner !== 'null') {
+      $('#article-banner').css({
+        'background-image': 'url(' + banner + ')'
+      })
+    } else {
+      $('#article-banner').geopattern(url)
+    }
+    $('.header').removeClass('fixed-header')
+
+    // error image
+    $(".markdown-content img").on('error', function() {
+      $(this).attr('src', 'http://file.muyutech.com/error-img.png')
+      $(this).css({
+        'cursor': 'default'
+      })
+    })
+
+    // zoom image
+    $(".markdown-content img").on('click', function() {
+      var src = $(this).attr('src')
+      if (src !== 'http://file.muyutech.com/error-img.png') {
+        var imageW = $(this).width()
+        var imageH = $(this).height()
+
+        var zoom = ($(window).width() * 0.95 / imageW).toFixed(2)
+        zoom = zoom < 1 ? 1 : zoom
+        zoom = zoom > 2 ? 2 : zoom
+        var transY = (($(window).height() - imageH) / 2).toFixed(2)
+
+        $('body').append('<div class="image-view-wrap"><div class="image-view-inner"><img src="'+ src +'" /></div></div>')
+        $('.image-view-wrap').addClass('wrap-active')
+        $('.image-view-wrap img').css({
+          'width': `${imageW}`,
+          'transform': `translate3d(0, ${transY}px, 0) scale3d(${zoom}, ${zoom}, 1)`
+        })
+        $('html').css('overflow', 'hidden')
+
+        $('.image-view-wrap').on('click', function() {
+          $(this).remove()
+          $('html').attr('style', '')
+        })
+      }
+    })
+  })();
+</script>
+
+
+
+
+
+
+
+    <div class="scroll-top">
+  <span class="arrow-icon"></span>
+</div>
+    <footer class="app-footer">
+  <p class="copyright">
+    Zhengyue Huang &copy; 2019 | Proudly powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+    <br>
+    Theme by <a href="https://github.com/yanm1ng">vexo</a>
+  </p>
+</footer>
+
+<script>
+  function async(u, c) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+</script>
+<script>
+  async("//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js", function(){
+    FastClick.attach(document.body);
+  })
+</script>
+
+<script>
+  var hasLine = 'false';
+  async("//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js", function(){
+    $('figure pre').each(function(i, block) {
+      var figure = $(this).parents('figure');
+      if (hasLine === 'false') {
+        figure.find('.gutter').hide();
+      }
+      var lang = figure.attr('class').split(' ')[1] || 'code';
+      var codeHtml = $(this).html();
+      var codeTag = document.createElement('code');
+      codeTag.className = lang;
+      codeTag.innerHTML = codeHtml;
+      $(this).attr('class', '').empty().html(codeTag);
+      figure.attr('data-lang', lang.toUpperCase());
+      hljs.highlightBlock(block);
+    });
+  })
+</script>
+<!-- Baidu Tongji -->
+
+<script src="/js/script.js"></script>
+  </body>
+</html>
